@@ -101,8 +101,6 @@ key_map.space = function (ctrl, alt, shift)
         return
     end
 
-    print("Active tool: %s" % toolbar.active_tool)
-
     if toolbar.active_tool == PEN then
         set_cell_color()
     elseif toolbar.active_tool == TEXT_PEN then
