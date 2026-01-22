@@ -43,7 +43,11 @@ local tools = {
         }
     },
     {
-        name = "Type", desc = "Text-editor typing controls (not implemented).",
+        name = "Text Type", desc = "Text-editor typing controls.",
+        controls = {
+            {"Alphanumeric keys", "Write naturally into the canvas."},
+            {"Backspace", "Clear your work."}
+        }
     },
     {
         name = "Eyedropper", desc = "Sample colors from other cells.",
