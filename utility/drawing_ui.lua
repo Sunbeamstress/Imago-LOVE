@@ -432,11 +432,17 @@ function draw_status_bar()
     set_rgb(0, 0, 0, 128)
     love.graphics.line(0, status_bar.height + 2, app.size.width, status_bar.height + 2)
 
-    -- Mouse information
     local text_height = app.font:getHeight("X")
 
     local x = 8
     local y = (status_bar.height * 0.5) - (text_height * 0.5)
+
+    -- Cursor
+    cecho("X:", "240", 8, y)
+    cecho("Y:", "240", 74, y)
+
+    cecho(text_map.cell_x, "032", 32, y)
+    cecho(text_map.cell_y, "032", 98, y)
 
     -- Active character
     local lc = app.last_char
