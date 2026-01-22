@@ -106,6 +106,48 @@ end
 
 
 
+function type_cell_char(char, x, y)
+    if app.palette_active then
+        return
+    end
+
+    local col = app.active_color
+
+    x = x or text_map.cell_x
+    y = y or text_map.cell_y
+
+    text_map.map[y][x].char = char
+    text_map.map[y][x].color = col
+
+    local new_x = text_map.cell_x + 1
+    if new_x > text_map.num_cols then
+        new_x = text_map.num_cols
+    end
+
+    text_map.cell_x = new_x
+end
+
+
+
+function backspace_cell_char()
+    if app.palette_active then
+        return
+    end
+
+    local new_x = text_map.cell_x - 1
+    if new_x < 1 then
+        new_x = 1
+    end
+
+    text_map.cell_x = new_x
+
+    local x = text_map.cell_x
+    local y = text_map.cell_y
+    text_map.map[y][x].char = " "
+end
+
+
+
 function set_mouse_visibility()
     if not app.instructions_cleared then
         love.mouse.setVisible(false)

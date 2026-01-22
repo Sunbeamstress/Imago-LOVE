@@ -3,7 +3,7 @@ local real_tool_max = 4
 
 local TEXT_PEN = 1
 local PEN = 2
-local TYPE = 3
+local TYPE_PEN = 3
 local EYEDROPPER = 4
 
 
@@ -90,7 +90,14 @@ key_map.tab = function (ctrl, alt, shift)
 end
 
 key_map.backspace = function (ctrl, alt, shift)
-    if not app.palette_active then
+    if app.palette_active then
+        return
+    end
+
+
+    if toolbar.active_tool == TYPE_PEN then
+        backspace_cell_char()
+    else
         set_cell_char()
     end
 end
@@ -208,7 +215,9 @@ function imago_text_input(t)
 
     app.last_control = "key"
 
-    if toolbar.active_tool == TEXT_PEN then
+    if toolbar.active_tool == TYPE_PEN then
+        type_cell_char(t)
+    elseif toolbar.active_tool == TEXT_PEN then
         set_cell_color()
         set_cell_char(t)
     end
