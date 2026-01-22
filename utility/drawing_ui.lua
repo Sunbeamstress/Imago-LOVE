@@ -689,6 +689,28 @@ end
 
 
 
+function draw_guideline()
+    local x = text_map.cell_width * 80
+    local sx = text_map.cell_width * 120
+
+    local dots = math.floor(text_map.height / 8)
+
+    set_rgb(42, 50, 58)
+    -- love.graphics.line(x, status_bar.height, x, status_bar.height + text_map.height)
+    for i = 1, dots do
+        local y = status_bar.height + (i * 8)
+        love.graphics.points(x, y)
+    end
+
+    set_rgb(27, 36, 45)
+    for i = 1, dots do
+        local y = status_bar.height + (i * 8)
+        love.graphics.points(sx, y)
+    end
+end
+
+
+
 --  $$$$$$\                       $$\                         $$\ $$\                     
 -- $$  __$$\                      $$ |                        $$ |$$ |                    
 -- $$ /  \__| $$$$$$\  $$$$$$$\ $$$$$$\    $$$$$$\   $$$$$$\  $$ |$$ | $$$$$$\   $$$$$$\  
@@ -702,6 +724,8 @@ end
 
 function imago_draw_interface()
     draw_text_map()
+    draw_guideline()
+
     draw_palette()
 
     draw_toolbar()
