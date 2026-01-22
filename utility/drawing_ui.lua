@@ -148,6 +148,24 @@ end
 
 
 
+function goto_newline()
+    if app.palette_active then
+        return
+    end
+
+    local new_y = text_map.cell_y + 1
+    if new_y < 1 then
+        new_y = 1
+    end
+
+    text_map.cell_y = new_y
+
+    local x = text_map.cell_x
+    local y = text_map.cell_y
+end
+
+
+
 function set_mouse_visibility()
     if not app.instructions_cleared then
         love.mouse.setVisible(false)

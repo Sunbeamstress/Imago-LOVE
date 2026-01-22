@@ -129,6 +129,8 @@ key_map["return"] = function (ctrl, alt, shift)
         set_cell_char(app.last_char)
     elseif toolbar.active_tool == EYEDROPPER then
         sample_cell_color()
+    elseif toolbar.active_tool == TYPE_PEN then
+        goto_newline()
     end
 end
 
