@@ -18,5 +18,12 @@ function app_init()
     app.size.width = 1920
     app.size.height = 1080
 
+    -- Load graphics
+    app.icon = {}
+
+    app.icon.cell_pos = love.graphics.newImage("img/label_cell_pos.png")
+    app.icon.color = love.graphics.newImage("img/label_color.png")
+    app.icon.framerate = love.graphics.newImage("img/label_framerate.png")
+
     print(love.filesystem.getSaveDirectory())
 end

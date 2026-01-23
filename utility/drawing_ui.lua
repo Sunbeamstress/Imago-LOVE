@@ -453,7 +453,7 @@ function draw_status_bar()
     local text_height = app.font:getHeight("X")
 
     local x = 8
-    local y = (status_bar.height * 0.5) - (text_height * 0.5)
+    local y = (status_bar.height * 0.5) - (text_height * 0.5) + 4
 
     -- Cursor
     cecho("X:", "240", 8, y)
@@ -461,6 +461,9 @@ function draw_status_bar()
 
     cecho(text_map.cell_x, "032", 32, y)
     cecho(text_map.cell_y, "032", 98, y)
+
+    set_rgb(255, 255, 255)
+    love.graphics.draw(app.icon.cell_pos, 8, 3)
 
     -- Active character
     local lc = app.last_char
@@ -489,6 +492,9 @@ function draw_status_bar()
     set_rgb(r, g, b)
     love.graphics.print("%s" % app.active_color, 192, y)
 
+    set_rgb(255, 255, 255)
+    love.graphics.draw(app.icon.color, 192, 3)
+
     -- Last 10 swatches
 
     -- echo("Mouse: %s %s" % {tostring(mx):jleft(4), tostring(my):jleft(4)}, x, y)
@@ -509,6 +515,9 @@ function draw_status_bar()
     -- FPS
     local f_str = "FPS: %s" % tostring(love.timer.getFPS())
     echo(f_str, app.size.width - 84, y)
+
+    set_rgb(255, 255, 255)
+    love.graphics.draw(app.icon.framerate, app.size.width - 84, 3)
 end
 
 

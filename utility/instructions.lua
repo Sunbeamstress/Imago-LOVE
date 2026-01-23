@@ -64,13 +64,16 @@ local tools = {
         },
     },
     {
-        name = "Export", desc = "Save your creation to the clipboard for use in Aetolia.",
+        name = "Export", desc = "Save your creation to the clipboard for use in Aetolia. It can be pasted into any text editor.",
         controls = {
             {"CTRL+E", "Export by hotkey."},
         },
     },
     {
-        name = "Import", desc = "Import a piece of color writing from Aetolia (not implemented).",
+        name = "Import", desc = "Import a piece of color writing from Aetolia. Highlight the writing, copy (CTRL+C), and then import.",
+        controls = {
+            {"CTRL+I", "Import by hotkey."}
+        }
     },
     {
         name = "Mudlet HTML Import", desc = "Import a segment of HTML text from Mudlet (not implemented).",
