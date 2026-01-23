@@ -1,62 +1,62 @@
-function compile_text_map()
-    local map_str, map_str_tbl = "", {}
+-- Lop the leading zeroes off color codes for Aetolia-friendly equivalents
+local function tokenize(col_str)
+    return col_str:gsub("^[0]+", "")
+end
 
-    for row, _ in pairs(text_map.map) do
+
+
+function compile_text_map()
+    local map_str_tbl = {}
+
+    for row = 1, text_map.num_rows do
         map_str_tbl[row] = ""
 
-        local last_color = "000"
         local row_str = ""
+        local last_color = "000"
+        local last_char = " "
         local last_control_code = ""
 
-        for col, c_tbl in pairs(text_map.map[row]) do
-            -- Analyze per character, see if we need to add any color controls
-            local char = c_tbl.char
-            local color = c_tbl.color
+        for col = 1, text_map.num_cols do
+            local char = text_map.map[row][col].char
+            local color = text_map.map[row][col].color
 
-            -- Helps keep the file clean!
+            -- Treat any black cells as space characters, to keep the file clean
             if color == "000" then
                 char = " "
             end
 
-            if char == " " then
-                color = "000"
-            end
+            local neutral = color == "000" or color == "007"
+            local last_neutral = last_color == "000" or last_color == "007"
 
-            local out_char = char
-            if color ~= last_color then
-                local lc = last_color:gsub("^[0]+", "")
-
-                -- Is the incoming color black?
-                if color == "000" then
+            if char ~= " " and color ~= last_color then
+                if color == "007" and not last_neutral then
+                    row_str = "%s|%s}" % {row_str, last_color}
                     last_control_code = "}"
-                    out_char = "|%s}%s" % {lc, char}
-                else
-                    -- was the last color black?
-                    if last_color == "000" then
-                        last_control_code = "{"
-                        out_char = "{%s" % {char}
-                    else
-                        last_control_code = "{"
-                        out_char = "|%s}{%s" % {lc, char}
-                    end
-                end
-            elseif col == #text_map.map[row] - 1 then
-                -- Last character in the row, let's close off the color string
-                if color ~= "000" then
-                    local col = color:gsub("^[0]+", "")
-                    last_control_code = "}"
-                    out_char = "%s|%s}" % {char, col}
+                elseif last_neutral and not neutral then
+                    row_str = "%s{" % row_str
+                    last_control_code = "{"
+                elseif not last_neutral then
+                    row_str = "%s|%s}{" % {row_str, last_color}
+                    last_control_code = "{"
                 end
             end
 
-            row_str = "%s%s" % {row_str, out_char}
-            last_color = color
+            -- Add the character to the row string.
+            row_str = "%s%s" % {row_str, char}
+
+            if char ~= " " then
+                -- Spaces are ultimately ignored - we only change the color
+                -- if it was a non-space character
+                last_color = color
+            end
+
+            last_char = char
         end
 
-        if last_control_code == "|" then
-            row_str = "%s%s}" % {row_str, last_color:gsub("^[0]+", "")}
-        elseif last_control_code == "{" then
-            row_str = "%s|%s}" % {row_str, last_color:gsub("^[0]+", "")}
+        -- The row ends with a colorized string, lop off any remaining space
+        if last_control_code ~= "}" and last_control_code ~= "" then
+            row_str = row_str:gsub("%s*$", "")
+            row_str = "%s|%s}" % {row_str, last_color}
         end
 
         map_str_tbl[row] = row_str
@@ -80,8 +80,7 @@ function compile_text_map()
     end
 
     -- Slap it all together and send it to the clipboard
-    map_str = table.concat(map_str_tbl, "\n")
-    return map_str
+    return table.concat(map_str_tbl, "\n")
 end
 
 
