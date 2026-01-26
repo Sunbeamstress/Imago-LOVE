@@ -22,3 +22,5 @@ The Imago is a portable application and does not need an installer.
 - Usage instructions will appear every time you run the application!
 
 ![A screenshot of the application.](github_info/app_screenshot.png)
+
+<img width="1550" height="381" alt="image" src="https://github.com/user-attachments/assets/b942f189-e894-4e69-b69b-adc85458992f" />
