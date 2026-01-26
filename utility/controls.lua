@@ -1,9 +1,9 @@
 -- How far to cycle through the toolbar before we hit things like clear/export/etc
 local real_tool_max = 4
 
-local TEXT_PEN = 1
-local PEN = 2
-local TYPE_PEN = 3
+local TEXT_PEN = 2
+local PEN = 3
+local TYPE_PEN = 1
 local EYEDROPPER = 4
 
 

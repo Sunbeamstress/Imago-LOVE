@@ -200,9 +200,9 @@ toolbar = {
     active_tool = 1,
 
     tools = {
-        [1] = {name = "Text Pen", icon = "text_pen_tool", desc = "Any key: Change the cell's character. Enter: Use the last applied character without changing color."},
-        [2] = {name = "Pen", icon = "pen_tool", desc = "Mouse Left, Space Bar: Alter a cell's color."},
-        [3] = {name = "Type", icon = "type_tool", desc = "Any key: Type naturally into the text map."},
+        [1] = {name = "Type", icon = "type_tool", desc = "Any key: Type naturally into the text map."},
+        [2] = {name = "Text Pen", icon = "text_pen_tool", desc = "Any key: Change the cell's character. Enter: Use the last applied character without changing color."},
+        [3] = {name = "Pen", icon = "pen_tool", desc = "Mouse Left, Space Bar: Alter a cell's color."},
         [4] = {name = "Eyedropper", icon = "eyedropper_tool", desc = "Mouse Left, Space Bar, Enter: Sample the current cell's color."},
         [5] = {name = "Clear", icon = "clear_tool", desc = "[Shortcut: CTRL+C] Clear the current text map.",
             on_use = function ()
