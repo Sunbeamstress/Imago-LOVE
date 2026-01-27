@@ -201,8 +201,7 @@ function imago_keypress(key, code, rep)
     -- Process 'any' key
     key_map.any()
 
-    if key_map[key] and
-    (not app.override_keys or (ctrl_mod and key == "q")) then
+    if key_map[key] and (not app.override_keys or (ctrl_mod and key == "q")) then
         key_map[key](ctrl_mod, alt_mod, shift_mod)
     end
 
