@@ -4,6 +4,7 @@ function app_init()
     app.palette_active = false
     app.active_color = "007"
     app.last_char = " "
+    app.init_typing_column = -1
 
     app.version = {
         major = 0,

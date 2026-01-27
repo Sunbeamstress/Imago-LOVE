@@ -28,6 +28,8 @@ function select_cell(x, y)
         return
     end
 
+    app.init_typing_column = x
+
     text_map.cell_x = x
     text_map.cell_y = y
 end
@@ -158,10 +160,10 @@ function goto_newline()
         new_y = 1
     end
 
-    text_map.cell_y = new_y
+    local new_x = (app.init_typing_column > -1 and app.init_typing_column) or text_map.cell_x
 
-    local x = text_map.cell_x
-    local y = text_map.cell_y
+    text_map.cell_x = new_x
+    text_map.cell_y = new_y
 end
 
 
