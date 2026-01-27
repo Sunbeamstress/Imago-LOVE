@@ -25,5 +25,9 @@ function app_init()
     app.icon.color = love.graphics.newImage("img/label_color.png")
     app.icon.framerate = love.graphics.newImage("img/label_framerate.png")
 
+    love.graphics.setDefaultFilter("nearest", "nearest", 1)
+
     print(love.filesystem.getSaveDirectory())
+    print(love.window.getDPIScale())
+    love.window.maximize()
 end

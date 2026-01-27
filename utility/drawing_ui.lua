@@ -574,8 +574,10 @@ text_map = {
 
 
 function init_text_map()
-    text_map.width = app.size.width
-    text_map.height = app.size.height - (status_bar.height + toolbar.height)
+    -- text_map.width = app.size.width
+    -- text_map.height = app.size.height - (status_bar.height + toolbar.height)
+    text_map.width = 1920
+    text_map.height = 1080 - (status_bar.height + toolbar.height)
 
     text_map.cell_width = app.font:getWidth("X")
     text_map.cell_height = app.font:getHeight("X")
@@ -740,7 +742,7 @@ function imago_draw_interface()
     draw_toolbar()
     draw_status_bar()
 
-    draw_tooltip()
+    -- draw_tooltip()
 
     set_mouse_visibility()
 
