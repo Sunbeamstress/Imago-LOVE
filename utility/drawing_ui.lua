@@ -177,7 +177,7 @@ function set_mouse_visibility()
         return
     end
 
-    if app.last_control ~= "mouse" then
+    if app.last_control ~= "mouse" and app.scrolling == "none" then
         love.mouse.setVisible(false)
     else
         love.mouse.setVisible(true)
@@ -203,14 +203,15 @@ function draw_mouse_hint()
     local w2 = app.size.width
     local h2 = 2
 
-    if app.scrolling == "up" then
+    local thresh = -1200 + (app.size.height / text_map.cell_height) - (toolbar.height / text_map.cell_height) - 2
+    if app.scrolling == "up" and app.camera.y > thresh then
         set_rgb(255, 165, 230, 192)
         love.graphics.rectangle("fill", x1, y1, w1, h1)
         set_rgb(235, 135, 215, 128)
         love.graphics.rectangle("fill", x1, y1 - 2, w1, 1)
         set_rgb(215, 105, 200, 64)
         love.graphics.rectangle("fill", x1, y1 - 4, w1, 1)
-    elseif app.scrolling == "down" then
+    elseif app.scrolling == "down" and app.camera.y < 0 then
         set_rgb(255, 165, 230, 192)
         love.graphics.rectangle("fill", x2, y2, w2, h2)
         set_rgb(235, 135, 215, 128)

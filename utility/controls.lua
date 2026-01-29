@@ -19,23 +19,20 @@ function update_mouse(dt)
     end
 
     -- Scrolling detection.
-    local x, y, w, h
-
-    -- Scrolling down
-    x = 0
-    y = app.size.height - (10 + toolbar.height)
-    w = app.size.width
-    h = 10 + toolbar.height
+    local x = 0
+    local y = app.size.height - (16 + toolbar.height)
+    local w = app.size.width
+    local h = 16
 
     local speed = 32
     if app.shift_mod then speed = speed * 4 end
-    if mouse_is_over(0, app.size.height - (10 + toolbar.height), app.size.width, 10 + toolbar.height) then
+    if mouse_is_over(x, y, w, h) then
         app.scrolling = "up"
         local new_y = app.camera.y - (speed * dt)
         local thresh = -1200 + (app.size.height / text_map.cell_height) - (toolbar.height / text_map.cell_height) - 2
         if new_y < thresh then new_y = thresh end
         app.camera.y = new_y
-    elseif mouse_is_over(0, 0, app.size.width, 10 + status_bar.height) then
+    elseif mouse_is_over(0, status_bar.height, w, h) then
         app.scrolling = "down"
         local new_y = app.camera.y + (speed * dt)
         if new_y > 0 then new_y = 0 end
