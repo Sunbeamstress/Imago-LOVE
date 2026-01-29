@@ -28,6 +28,12 @@ end
 
 
 
+function love.keyreleased(key, code)
+    imago_keyrelease(key, code)
+end
+
+
+
 function love.textinput(t)
     imago_text_input(t)
 end
@@ -51,6 +57,7 @@ end
 
 
 function love.update(dt)
+    update_mouse(dt)
     update_text_map()
 end
 

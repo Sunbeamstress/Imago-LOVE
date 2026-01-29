@@ -8,8 +8,40 @@ local EYEDROPPER = 4
 
 
 
+function update_mouse(dt)
+    app.mouse.x, app.mouse.y = love.mouse.getPosition()
+
+    -- Scrolling detection.
+    local x, y, w, h
+
+    app.scrolling = "none"
+    -- Scrolling down
+    x = 0
+    y = app.size.height - (10 + toolbar.height)
+    w = app.size.width
+    h = 10 + toolbar.height
+
+    local speed = 32
+    if app.shift_mod then speed = speed * 4 end
+    if mouse_is_over(0, app.size.height - (10 + toolbar.height), app.size.width, 10 + toolbar.height) then
+        app.scrolling = "up"
+        local new_y = app.camera.y - (speed * dt)
+        local thresh = -1200 + (app.size.height / text_map.cell_height) - (toolbar.height / text_map.cell_height) - 2
+        if new_y < thresh then new_y = thresh end
+        app.camera.y = new_y
+    elseif mouse_is_over(0, 0, app.size.width, 10 + status_bar.height) then
+        app.scrolling = "down"
+        local new_y = app.camera.y + (speed * dt)
+        if new_y > 0 then new_y = 0 end
+        app.camera.y = new_y
+    end
+end
+
+
+
 function mouse_is_over(x, y, w, h)
-    local mx, my = love.mouse.getPosition()
+    -- local mx, my = love.mouse.getPosition()
+    local mx, my = app.mouse.x, app.mouse.y
     return mx >= x and mx <= x + w and my >= y and my <= y + h
 end
 
@@ -31,65 +63,65 @@ key_map.any = function ()
     end
 end
 
-key_map.q = function (ctrl, alt, shift)
-    if ctrl then
+key_map.q = function ()
+    if app.ctrl_mod then
         love.event.quit()
     end
 end
 
-key_map.r = function (ctrl, alt, shift)
-    if ctrl then
+key_map.r = function ()
+    if app.ctrl_mod then
         love.event.push("quit", "restart")
     end
 end
 
-key_map.e = function (ctrl, alt, shift)
-    if ctrl and shift then
+key_map.e = function ()
+    if app.ctrl_mod and app.shift_mod then
         map_dump()
-    elseif ctrl then
+    elseif app.ctrl_mod then
         transfer_text_map_to_clipboard()
     end
 end
 
-key_map.i = function (ctrl, alt, shift)
-    if ctrl then
+key_map.i = function ()
+    if app.ctrl_mod then
         get_text_map_from_clipboard()
     end
 end
 
-key_map.c = function (ctrl, alt, shift)
-    if ctrl then
+key_map.c = function ()
+    if app.ctrl_mod then
         clear_text_map()
     end
 end
 
-key_map.s = function (ctrl, alt, shift)
-    if ctrl then
+key_map.s = function ()
+    if app.ctrl_mod then
         save_file()
     end
 end
 
-key_map.l = function (ctrl, alt, shift)
-    if ctrl then
+key_map.l = function ()
+    if app.ctrl_mod then
         load_file()
     end
 end
 
-key_map.o = function (ctrl, alt, shift)
-    if ctrl then
+key_map.o = function ()
+    if app.ctrl_mod then
         open_files()
     end
 end
 
-key_map.escape = function (ctrl, alt, shift)
+key_map.escape = function ()
     app.palette_active = false
 end
 
-key_map.tab = function (ctrl, alt, shift)
+key_map.tab = function ()
     app.palette_active = not app.palette_active
 end
 
-key_map.backspace = function (ctrl, alt, shift)
+key_map.backspace = function ()
     if app.palette_active then
         return
     end
@@ -102,7 +134,7 @@ key_map.backspace = function (ctrl, alt, shift)
     end
 end
 
-key_map.space = function (ctrl, alt, shift)
+key_map.space = function ()
     if app.palette_active then
         app.palette_active = false
         return
@@ -117,7 +149,7 @@ key_map.space = function (ctrl, alt, shift)
     end
 end
 
-key_map["return"] = function (ctrl, alt, shift)
+key_map["return"] = function ()
     if app.palette_active then
         app.palette_active = false
         return
@@ -142,28 +174,36 @@ local function process_move_key(x, y)
     end
 end
 
-key_map.up = function (ctrl, alt, shift)
-    process_move_key(0, -1)
+key_map.up = function ()
+    local x = 0
+    local y = (app.shift_mod and -5) or -1
+    process_move_key(x, y)
 end
 
-key_map.down = function (ctrl, alt, shift)
-    process_move_key(0, 1)
+key_map.down = function ()
+    local x = 0
+    local y = (app.shift_mod and 5) or 1
+    process_move_key(x, y)
 end
 
-key_map.left = function (ctrl, alt, shift)
-    process_move_key(-1, 0)
+key_map.left = function ()
+    local x = (app.shift_mod and -5) or -1
+    local y = 0
+    process_move_key(x, y)
 end
 
-key_map.right = function (ctrl, alt, shift)
-    process_move_key(1, 0)
+key_map.right = function ()
+    local x = (app.shift_mod and 5) or 1
+    local y = 0
+    process_move_key(x, y)
 end
 
-key_map["f4"] = function (ctrl, alt, shift)
+key_map["f4"] = function ()
     app.chosen_tagline = false
     app.instructions_cleared = false
 end
 
-key_map["f2"] = function (ctrl, alt, shift)
+key_map["f2"] = function ()
     local at = toolbar.active_tool
 
     at = at + 1
@@ -174,7 +214,7 @@ key_map["f2"] = function (ctrl, alt, shift)
     toolbar.active_tool = at
 end
 
-key_map["f1"] = function (ctrl, alt, shift)
+key_map["f1"] = function ()
     local at = toolbar.active_tool
 
     at = at - 1
@@ -192,19 +232,24 @@ function imago_keypress(key, code, rep)
     app.last_control = "key"
     app.override_keys = false
 
-    local ctrl_mod = love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")
-    local alt_mod = love.keyboard.isDown("lalt") or love.keyboard.isDown("rshift")
-    local shift_mod = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
-
-
+    app.ctrl_mod = love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")
+    app.alt_mod = love.keyboard.isDown("lalt") or love.keyboard.isDown("rshift")
+    app.shift_mod = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
 
     -- Process 'any' key
     key_map.any()
 
-    if key_map[key] and (not app.override_keys or (ctrl_mod and key == "q")) then
-        key_map[key](ctrl_mod, alt_mod, shift_mod)
+    if key_map[key] and (not app.override_keys or (app.ctrl_mod and key == "q")) then
+        key_map[key]()
     end
+end
 
+
+
+function imago_keyrelease(key, code)
+    app.ctrl_mod = love.keyboard.isDown("lctrl") or love.keyboard.isDown("rctrl")
+    app.alt_mod = love.keyboard.isDown("lalt") or love.keyboard.isDown("rshift")
+    app.shift_mod = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
 end
 
 

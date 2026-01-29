@@ -1,3 +1,6 @@
+local MAX_WIDTH = 120
+local MAX_HEIGHT = 1200
+
 local greeting = [[
 
   Welcome to {The Imago v0.4!|201}
@@ -178,6 +181,42 @@ function set_mouse_visibility()
         love.mouse.setVisible(false)
     else
         love.mouse.setVisible(true)
+    end
+end
+
+
+
+function draw_mouse_hint()
+    -- Handles scrolling border indicators and more.
+    if not love.mouse.isVisible() then
+        return
+    end
+
+    -- Scrolling indicators
+    local x1 = 0
+    local y1 = app.size.height - (4 + toolbar.height)
+    local w1 = app.size.width
+    local h1 = 2
+
+    local x2 = 0
+    local y2 = status_bar.height
+    local w2 = app.size.width
+    local h2 = 2
+
+    if app.scrolling == "up" then
+        set_rgb(255, 165, 230, 192)
+        love.graphics.rectangle("fill", x1, y1, w1, h1)
+        set_rgb(235, 135, 215, 128)
+        love.graphics.rectangle("fill", x1, y1 - 2, w1, 1)
+        set_rgb(215, 105, 200, 64)
+        love.graphics.rectangle("fill", x1, y1 - 4, w1, 1)
+    elseif app.scrolling == "down" then
+        set_rgb(255, 165, 230, 192)
+        love.graphics.rectangle("fill", x2, y2, w2, h2)
+        set_rgb(235, 135, 215, 128)
+        love.graphics.rectangle("fill", x2, y2 + 2, w2, 1)
+        set_rgb(215, 105, 200, 64)
+        love.graphics.rectangle("fill", x2, y2, w2, 1)
     end
 end
 
@@ -387,12 +426,13 @@ function draw_palette()
 
     local x, y, w, h, inc
     local padding = 2
+    local x_offset = app.size.width - ((24 + padding) * 12)
 
     for row, _ in pairs(palette.map) do
         for col, n in ipairs(palette.map[row]) do
             w, h = 24, 24
 
-            x = (w + padding) * (col - 1)
+            x = (w + padding) * (col - 1) + x_offset
             y = (h + padding) * (row - 1) + top_margin
 
             local num = tostring(n):zeropad(3)
@@ -411,7 +451,7 @@ function draw_palette()
     end
 
     -- Highlight the currently selected cell
-    x = (w + padding) * (palette.cell_x - 1)
+    x = (w + padding) * (palette.cell_x - 1) + x_offset
     y = (h + padding) * (palette.cell_y - 1) + top_margin
     set_rgb(255, 255, 255)
     love.graphics.rectangle("line", x - 1, y - 1, w + 2, h + 2)
@@ -514,6 +554,10 @@ function draw_status_bar()
     -- x = 940
     -- echo("Active swatch: %s %s" % {tostring(palette.cell_x), tostring(palette.cell_y)}, x, y)
 
+    -- Camera
+    local c_str = "Camera Y: %s" % tostring(app.camera.y)
+    echo(c_str, app.size.width - 214, y)
+
     -- FPS
     local f_str = "FPS: %s" % tostring(love.timer.getFPS())
     echo(f_str, app.size.width - 84, y)
@@ -558,7 +602,7 @@ end
 
 
 text_map = {
-    x = 0, y = 33,
+    x = 0, y = 0,
     width = 0, height = 0,
     cell_width = 0, cell_height = 0,
 
@@ -573,16 +617,22 @@ text_map = {
     canvas = nil,
 }
 
+text_map.y = status_bar.height
+
 
 
 function init_text_map()
-    -- text_map.width = app.size.width
-    -- text_map.height = app.size.height - (status_bar.height + toolbar.height)
-    text_map.width = 1920
-    text_map.height = 1080 - (status_bar.height + toolbar.height)
-
     text_map.cell_width = app.font:getWidth("X")
     text_map.cell_height = app.font:getHeight("X")
+
+    text_map.width = text_map.cell_width * MAX_WIDTH
+    text_map.height = text_map.cell_height * MAX_HEIGHT
+    -- First time window resize
+    app.size.width = text_map.width
+    love.window.setMode(app.size.width, app.size.height)
+
+    -- text_map.width = 1920
+    -- text_map.height = 1080 - (status_bar.height + toolbar.height)
 
     text_map.num_rows = math.floor(text_map.height / text_map.cell_height)
     text_map.num_cols = math.floor(text_map.width / text_map.cell_width)
@@ -621,8 +671,11 @@ end
 
 
 
-function get_cell_under_mouse(mx, my)
-    local y = my - status_bar.height
+function get_cell_under_mouse()
+    local mx, my = app.mouse.x, app.mouse.y
+    local y_offset = text_map.cell_height * app.camera.y
+
+    local y = (my - y_offset) - status_bar.height
     if y < 0 then return end
 
     local col = math.floor(mx / text_map.cell_width) + 1
@@ -637,12 +690,18 @@ end
 
 
 function draw_text_map()
+    -- Quantize camera
+    local y_offset = text_map.cell_height * app.camera.y
+
+    local tm_x = text_map.x + app.camera.x
+    local tm_y = text_map.y + y_offset
+
     -- background
     set_rgb(4, 5, 6)
-    love.graphics.rectangle("fill", text_map.x, text_map.y, text_map.width, text_map.height)
+    love.graphics.rectangle("fill", tm_x, tm_y, text_map.width, text_map.height)
 
     -- Draw each character cell.
-    local top_margin = status_bar.height
+    -- local top_margin = status_bar.height
 
     for row = 1, text_map.num_rows do
         for col = 1, text_map.num_cols do
@@ -653,7 +712,7 @@ function draw_text_map()
                 local c = text_map.map[row][col].color
 
                 local x = (col - 1) * text_map.cell_width
-                local y = top_margin + ((row - 1) * text_map.cell_height)
+                local y = tm_y + ((row - 1) * text_map.cell_height)
                 local w = text_map.cell_width
                 local h = text_map.cell_height
 
@@ -662,8 +721,7 @@ function draw_text_map()
         end
     end
 
-    local mx, my = love.mouse.getPosition()
-    local hover_col, hover_row = get_cell_under_mouse(mx, my)
+    local hover_col, hover_row = get_cell_under_mouse()
 
     if hover_col and app.last_control == "mouse" then
         select_cell(hover_col, hover_row)
@@ -675,10 +733,10 @@ function draw_text_map()
 
     if app.instructions_cleared then
         -- Draw the cursor!
-        local top_margin = status_bar.height
+        -- local top_margin = status_bar.height
 
         local x = (text_map.cell_x - 1) * text_map.cell_width
-        local y = ((text_map.cell_y - 1) * text_map.cell_height) + top_margin
+        local y = ((text_map.cell_y - 1) * text_map.cell_height) + tm_y
         local w = text_map.cell_width
         local h = text_map.cell_height
 
@@ -745,8 +803,8 @@ function imago_draw_interface()
     draw_status_bar()
 
     -- draw_tooltip()
-
     set_mouse_visibility()
+    draw_mouse_hint()
 
     if not app.instructions_cleared then
         draw_instructions()

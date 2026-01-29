@@ -87,6 +87,28 @@ end
 
 function decompile_text_map(s)
     local s_tbl = s:split("\n")
+
+    -- Find any string too long to fit into our canvas, remove, split, and
+    -- re-insert it into the string table
+    local i_tbl = {}
+
+    for s_n, s_li in ipairs(s_tbl) do
+        if s_li:len() > 120 then
+            table.insert(i_tbl, {pos = s_n, str_tbl = s_li:wrap2(120, 0, ""):split("\n")})
+        end
+    end
+
+    for i = #i_tbl, 1, -1 do
+        local pos = i_tbl[i].pos
+        local str_tbl = i_tbl[i].str_tbl
+        table.remove(s_tbl, pos)
+
+        for n = #str_tbl, 1, -1 do
+            local str = str_tbl[n]
+            table.insert(s_tbl, pos, str)
+        end
+    end
+
     local l_tbl = {}
 
     for ln, line_str in ipairs(s_tbl) do

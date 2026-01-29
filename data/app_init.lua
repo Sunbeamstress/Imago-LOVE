@@ -19,6 +19,15 @@ function app_init()
     app.size.width = 1920
     app.size.height = 1080
 
+    app.camera = {x = 0, y = 0}
+    app.mouse = {x = 0, y = 0}
+
+    app.scrolling = "none"
+
+    app.ctrl_mod = false
+    app.alt_mod = false
+    app.shift_mod = false
+
     -- Load graphics
     app.icon = {}
 
