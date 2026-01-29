@@ -47,6 +47,7 @@ end
 
 
 function love.mousepressed(x, y, btn)
+    imago_mouse_pressed(x, y, btn)
 end
 
 

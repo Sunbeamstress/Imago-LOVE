@@ -56,6 +56,14 @@ end
 
 
 
+function imago_mouse_pressed(x, y, btn)
+    if btn == 3 then
+        app.camera.y = 0
+    end
+end
+
+
+
 function imago_mouse_wheel(x, y)
     if not love.window.hasMouseFocus() then
         return
