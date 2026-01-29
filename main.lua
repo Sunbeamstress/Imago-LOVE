@@ -70,5 +70,6 @@ end
 
 
 function love.resize(w, h)
+    app.window_x, app.window_y = love.window.getPosition()
     app.size.width, app.size.height = w, h
 end

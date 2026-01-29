@@ -11,10 +11,16 @@ local EYEDROPPER = 4
 function update_mouse(dt)
     app.mouse.x, app.mouse.y = love.mouse.getPosition()
 
+    app.scrolling = "none"
+
+    -- Below this section are things that need to be run only when the mouse is INSIDE the window!
+    if not love.window.hasMouseFocus() then
+        return
+    end
+
     -- Scrolling detection.
     local x, y, w, h
 
-    app.scrolling = "none"
     -- Scrolling down
     x = 0
     y = app.size.height - (10 + toolbar.height)
@@ -65,6 +71,7 @@ end
 
 key_map.q = function ()
     if app.ctrl_mod then
+        print("X: %s Y: %s" % {tostring(app.window_x), tostring(app.window_y)})
         love.event.quit()
     end
 end

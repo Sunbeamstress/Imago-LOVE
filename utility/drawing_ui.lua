@@ -555,8 +555,8 @@ function draw_status_bar()
     -- echo("Active swatch: %s %s" % {tostring(palette.cell_x), tostring(palette.cell_y)}, x, y)
 
     -- Camera
-    local c_str = "Camera Y: %s" % tostring(app.camera.y)
-    echo(c_str, app.size.width - 214, y)
+    -- local c_str = "Camera Y: %s" % tostring(app.camera.y)
+    -- echo(c_str, app.size.width - 214, y)
 
     -- FPS
     local f_str = "FPS: %s" % tostring(love.timer.getFPS())
@@ -627,12 +627,15 @@ function init_text_map()
 
     text_map.width = text_map.cell_width * MAX_WIDTH
     text_map.height = text_map.cell_height * MAX_HEIGHT
+
     -- First time window resize
     app.size.width = text_map.width
-    love.window.setMode(app.size.width, app.size.height)
+    love.window.setMode(app.size.width, app.size.height, {
+        resizable = true,
+        centered = true,
+    })
 
-    -- text_map.width = 1920
-    -- text_map.height = 1080 - (status_bar.height + toolbar.height)
+    app.window_x, app.window_y = love.window.getPosition()
 
     text_map.num_rows = math.floor(text_map.height / text_map.cell_height)
     text_map.num_cols = math.floor(text_map.width / text_map.cell_width)

@@ -19,6 +19,8 @@ function app_init()
     app.size.width = 1920
     app.size.height = 1080
 
+    app.window_x, app.window_y = love.window.getPosition()
+
     app.camera = {x = 0, y = 0}
     app.mouse = {x = 0, y = 0}
 
@@ -35,10 +37,9 @@ function app_init()
     app.icon.color = love.graphics.newImage("img/label_color.png")
     app.icon.framerate = love.graphics.newImage("img/label_framerate.png")
 
-    love.graphics.setDefaultFilter("nearest", "nearest", 1)
-    love.window.maximize()
-
     love.keyboard.setKeyRepeat(true)
+    love.graphics.setDefaultFilter("nearest", "nearest", 1)
+
     -- print(love.filesystem.getSaveDirectory())
     -- print(love.window.getDPIScale())
 end
