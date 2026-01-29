@@ -56,6 +56,12 @@ end
 
 
 
+function love.wheelmoved(x, y)
+    imago_mouse_wheel(x, y)
+end
+
+
+
 function love.update(dt)
     update_mouse(dt)
     update_text_map()

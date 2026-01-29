@@ -56,6 +56,35 @@ end
 
 
 
+function imago_mouse_wheel(x, y)
+    if not love.window.hasMouseFocus() then
+        return
+    end
+
+    if y == 1 then
+        app.scrolling = "down"
+    elseif y == -1 then
+        app.scrolling = "up"
+    end
+
+    local new_y = app.camera.y + y
+    local thresh = -1200 + (app.size.height / text_map.cell_height) - (toolbar.height / text_map.cell_height) - 2
+
+    if new_y > 0 then
+        app.scrolling = "none"
+        new_y = 0
+    end
+
+    if new_y < thresh then
+        app.scrolling = "none"
+        new_y = thresh
+    end
+
+    app.camera.y = new_y
+end
+
+
+
 local key_map = {}
 
 -- Special catch-all key
