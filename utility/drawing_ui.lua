@@ -44,6 +44,21 @@ function move_cell(x, y)
     local cy = math.clamp(text_map.cell_y + y, 1, text_map.num_rows)
 
     select_cell(cx, cy)
+
+    -- Nudge the camera if we're too far out of bounds
+    local y1 = math.floor((app.camera.y * -1) + 1)
+    local y2 = y1 + 58
+
+    local new_y
+    if cy > y2 then
+        new_y = app.camera.y - y
+        if new_y < 0 - MAX_HEIGHT then new_y = 0 end
+        app.camera.y = new_y
+    elseif cy < y1 then
+        new_y = app.camera.y - y
+        if new_y > 0 then new_y = 0 end
+        app.camera.y = new_y
+    end
 end
 
 
@@ -556,8 +571,8 @@ function draw_status_bar()
     -- echo("Active swatch: %s %s" % {tostring(palette.cell_x), tostring(palette.cell_y)}, x, y)
 
     -- Camera
-    -- local c_str = "Camera Y: %s" % tostring(app.camera.y)
-    -- echo(c_str, app.size.width - 214, y)
+    local c_str = "Camera Y: %s" % tostring(app.camera.y)
+    echo(c_str, app.size.width - 214, y)
 
     -- FPS
     local f_str = "FPS: %s" % tostring(love.timer.getFPS())
