@@ -1,0 +1,16 @@
+- name: Build Linux packages
+  id: build-packages
+  uses: love-action/love-actions-linux@v2
+  with:
+    app-name: The Imago
+    bundle-id: com.imago.loveapp
+    description: A visual text editor for color writing in Aetolia, the Midnight Age.
+    version-string: "0.4.5.1"
+    icon-path: ./.github/build/linux/dev/icon.png
+    love-ref: "11.5"
+    love-package: ./game.love
+    lib-path: ./lib
+    share-path: ./share
+    build-deb: true
+    product-name: love_app
+    output-folder: ./dist
